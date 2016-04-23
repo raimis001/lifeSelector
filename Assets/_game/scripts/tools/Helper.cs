@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public static class Helper 
 {
@@ -31,6 +32,19 @@ public static class Helper
 	{
 		return (int)value;
 	}
+}
 
+public class DefenceParams
+{
+	public float Damage;
+}
 
+[Serializable]
+public class AttackParams
+{
+	public float RadarRange = 3f;
+	public float AttackRange = 1f;
+	public float AttackDamage = 1f;
+	public float AttackSpeed = 0.1f;
+	public float DefenceDamage = 1f;
 }
