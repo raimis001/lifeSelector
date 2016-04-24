@@ -39,7 +39,21 @@ public class Cow : BaseObject
 			RadarPlane.transform.position = plane;
 		}
 
-		//Enemy[] enemys = FindObjectsOfType<Enemy>();
+		Enemy[] enemys = FindObjectsOfType<Enemy>();
+		foreach (Enemy enemy in enemys)
+		{
+			if (Distance(enemy) < Attack.RadarRange)
+			{
+				foreach (Monster monster in _monsters)
+				{
+					if (!monster.Enemy)
+					{
+						monster.Enemy = enemy;
+					}
+				}
+				break;
+			}
+		}
 		//Log(Distance(enemys[0]));
 		
 	}
@@ -61,16 +75,28 @@ public class Cow : BaseObject
 
 	public void CallMonsters()
 	{
+		if (MonsterCount >= MaxMonsterCount)
+		{
+			return;
+		}
+
 		Monster[] monsters = FindObjectsOfType<Monster>();
 		Debug.Log(monsters.Length);
 
+		foreach (Monster monster in monsters)
+		{
+			if (monster.Actor != null ) continue;
+			monster.Actor = this;
+			_monsters.Add(monster);
+			if (MonsterCount >= MaxMonsterCount) break;
+		}
 	}
 
 	public void ReleaseMonsters()
 	{
 		foreach (Monster monster in _monsters)
 		{
-			monster.CurrentCow = null;
+			monster.Actor = null;
 		}
 
 		_monsters.Clear();
@@ -78,13 +104,13 @@ public class Cow : BaseObject
 
 	public bool AddMonster(Monster monster)
 	{
-		if (MonsterCount >= MaxMonsterCount || monster.CurrentCow != null)
+		if (MonsterCount >= MaxMonsterCount || monster.Actor != null)
 		{
 			return false;
 		}
 
 		_monsters.Add(monster);
-		monster.CurrentCow = this;
+		monster.Actor = this;
 
 		return true;
 

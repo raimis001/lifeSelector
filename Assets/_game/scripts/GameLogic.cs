@@ -4,12 +4,17 @@ using System.Collections;
 public class GameLogic : MonoBehaviour
 {
 
-	public GameObject MonsterObject;
-	public GameObject MonsterPrefab;
 	public GameObject SpawnPoint;
 
-	public Terrain Terrain;
 	public GameObject Cursor;
+
+	[Header("Holders")]
+	public GameObject MonsterHolder;
+	public GameObject BulletHolder;
+
+	[Header("Prefabs")]
+	public GameObject MonsterPrefab;
+	public GameObject BulletPrefab;
 
 	private bool _spawning;
 
@@ -74,7 +79,7 @@ public class GameLogic : MonoBehaviour
 #region MONSTERS
 	public void AddMonster()
 	{
-		Monster.Create(MonsterPrefab, MonsterObject, SpawnPoint);
+		Monster.Create(SpawnPoint);
 	}
 
 	public void StartSpawn()

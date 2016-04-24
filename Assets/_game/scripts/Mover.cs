@@ -64,7 +64,7 @@ public class Mover : MonoBehaviour
 		}
 	}
 
-	void RandomizeMove()
+	protected virtual void RandomizeMove()
 	{
 		Vector3 movingVector = new Vector3().Random();
 
@@ -77,7 +77,9 @@ public class Mover : MonoBehaviour
 
 	public void Stop()
 	{
-		Debug.Log("Stop mover");
+		//Debug.Log("Stop mover");
+		_moveToPosition = false;
+		_velocity = Vector3.zero;
 		_rigibody.velocity = Vector3.zero;
 		_rigibody.angularVelocity = Vector3.zero;
 	}
