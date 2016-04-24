@@ -96,6 +96,7 @@ public class Cow : BaseObject
 	{
 		foreach (Monster monster in _monsters)
 		{
+			monster.Enemy = null;
 			monster.Actor = null;
 		}
 

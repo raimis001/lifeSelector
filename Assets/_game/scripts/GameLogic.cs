@@ -15,6 +15,7 @@ public class GameLogic : MonoBehaviour
 	[Header("Prefabs")]
 	public GameObject MonsterPrefab;
 	public GameObject BulletPrefab;
+	public GameObject DestroyParticle;
 
 	private bool _spawning;
 
@@ -61,6 +62,13 @@ public class GameLogic : MonoBehaviour
 		}
 	}
 
+	public void DoExplosion(Vector3 position)
+	{
+		if (!DestroyParticle) return;
+
+		Instantiate(DestroyParticle, position, Quaternion.identity);
+
+	}
 
 	public void OnTerrainClick(Vector3 position)
 	{
@@ -120,6 +128,16 @@ public class GameLogic : MonoBehaviour
 		}
 
 		_selectedCow.CallMonsters();
+	}
+
+	public void ReleaseMonsters()
+	{
+		if (!_selectedCow)
+		{
+			return;
+		}
+
+		_selectedCow.ReleaseMonsters();
 	}
 	#endregion
 

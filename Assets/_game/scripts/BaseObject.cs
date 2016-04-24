@@ -46,6 +46,16 @@ public class BaseObject : Mover
 		return Vector3.Distance(Position, obj.Position);
 	}
 
+	public void DoDamage(float damage)
+	{
+		Hitpoints -= damage;
+		if (Hitpoints <= 0)
+		{
+			The.GameLogic.DoExplosion(transform.position);
+			Destroy(gameObject);
+		}
+	}
+
 	bool CheckIsLive()
 	{
 		return Live > 0 && Hitpoints > 0;

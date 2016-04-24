@@ -9,14 +9,14 @@ public class BulletManager : MonoBehaviour
 	private bool _shoting;
 	private float _shotTime;
 
-	public void Shot(BaseObject parent, BaseObject target)
+	public void Shot(BaseObject parent, BaseObject target, string tag, AttackParams attack)
 	{
 		if (_shoting) return;
 
 		_shotTime = ShotTime;
 		_shoting = true;
 
-		Bullet.Create(parent, target, "Enemy");
+		Bullet.Create(parent, target, tag, attack);
 
 		StartCoroutine(DoShot());
 	}

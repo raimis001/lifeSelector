@@ -20,7 +20,7 @@ public class guiAttack : MonoBehaviour
 			if (RadarText) RadarText.text = _params.RadarRange.ToString("0");
 			if (AttackRangeText) AttackRangeText.text = _params.AttackRange.ToString("0");
 			if (AttackDamageText) AttackDamageText.text = _params.AttackDamage.ToString("0");
-			if (AttackSpeedText) AttackSpeedText.text = _params.AttackSpeed.ToString("0");
+			if (AttackSpeedText) AttackSpeedText.text = _params.AttackSpeed.ToString("0.00");
 			if (DefenceText) DefenceText.text = _params.DefenceDamage.ToString("0");
 
 		}

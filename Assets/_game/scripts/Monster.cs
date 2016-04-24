@@ -43,7 +43,7 @@ public class Monster : BaseObject
 
 		if (Enemy && Actor is Cow)
 		{
-
+			_line.enabled = true;
 			_line.SetPosition(0, transform.position);
 			_line.SetPosition(1, Enemy.transform.position);
 			if (Distance(Enemy) > ((Cow) Actor).Attack.AttackRange)
@@ -53,7 +53,7 @@ public class Monster : BaseObject
 			}
 			else
 			{
-				_bulletManager.Shot(this, Enemy);
+				_bulletManager.Shot(this, Enemy, "Enemy", ((Cow)Actor).Attack);
 				Stop();
 			}
 			return;
@@ -63,9 +63,13 @@ public class Monster : BaseObject
 
 		if (Actor)
 		{
-			
-			_line.SetPosition(0,transform.position);
+			_line.enabled = true;
+			_line.SetPosition(0, transform.position);
 			_line.SetPosition(1, Actor.transform.position);
+		}
+		else
+		{
+			_line.enabled = false;
 		}
 
 	}
