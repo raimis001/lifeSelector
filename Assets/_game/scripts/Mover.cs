@@ -5,8 +5,11 @@ public class Mover : MonoBehaviour
 {
 	[Range(0, 5)]
 	public float MovingSpeed = 1;
+
 	[Range(1, 10)]
 	public float MovingTime;
+
+	public bool AllowRandomMove = true;
 
 	private Rigidbody _rigibody;
 	private float _movingTime;
@@ -17,14 +20,13 @@ public class Mover : MonoBehaviour
 	private float _lastDistance;
 
 	// Use this for initialization
-	void Start()
+	protected virtual void Start()
 	{
 		_rigibody = GetComponent<Rigidbody>();
-
 	}
 
 	// Update is called once per frame
-	void Update()
+	protected virtual void Update()
 	{
 		if (_moveToPosition)
 		{
@@ -40,18 +42,21 @@ public class Mover : MonoBehaviour
 			return;
 		}
 
+		if (!AllowRandomMove)
+		{
+			return;
+		}
+
 		if (_movingTime <= 0)
 		{
 			RandomizeMove();
 			_movingTime = MovingTime;
 			return;
 		}
-		//Debug.DrawLine(transform.position, Stimulus.position, Color.blue);
 		_movingTime -= Time.deltaTime;
-
 	}
 
-	void FixedUpdate()
+	protected virtual void FixedUpdate()
 	{
 		if (_moveToPosition)
 		{

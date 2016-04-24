@@ -19,17 +19,25 @@ public class GameLogic : MonoBehaviour
 		get { return _selectedCow; }
 		set
 		{
+			if (_selectedCow) _selectedCow.Deselect();
+
 			_selectedCow = value;
 			Gui.SetCow(_selectedCow);
+
+			if (_selectedCow) _selectedCow.Select();
+
 		}
 	}
 
-	// Use this for initialization
+	#region INIT
+	void Awake()
+	{
+		The.GameLogic = this;
+	}
 	void Start()
 	{
 
 	}
-
 	void OnEnable()
 	{
 		TerrainManager.OnTerrainClick += OnTerrainClick;
@@ -38,13 +46,13 @@ public class GameLogic : MonoBehaviour
 	{
 		TerrainManager.OnTerrainClick -= OnTerrainClick;
 	}
+	#endregion
 
-	// Update is called once per frame
 	void Update()
 	{
 		if (Input.GetMouseButtonUp(1) && _selectedCow != null)
 		{
-			_selectedCow = null;
+			SelectedCow = null;
 		}
 	}
 
@@ -60,28 +68,20 @@ public class GameLogic : MonoBehaviour
 		Cursor.transform.position = position;
 		Cursor.SetActive(true);
 
-		_selectedCow.Destination = position;
+		_selectedCow.MoveToPosition(position);
 	}
 
+#region MONSTERS
 	public void AddMonster()
 	{
-		Debug.Log("Add");
-
-
-
-		GameObject obj = Instantiate(MonsterPrefab);
-		obj.name = "monster";
-		obj.transform.SetParent(MonsterObject.transform);
-		obj.transform.position = SpawnPoint ? SpawnPoint.transform.position : Vector3.zero;
-
-		Monster monster =  obj.GetComponent<Monster>();
-
+		Monster.Create(MonsterPrefab, MonsterObject, SpawnPoint);
 	}
 
 	public void StartSpawn()
 	{
 		if (_spawning) return;
 
+		AddMonster();
 		_spawning = true;
 		StartCoroutine(SpawnMonster());
 	}
@@ -106,4 +106,16 @@ public class GameLogic : MonoBehaviour
 			yield return null;
 		}
 	}
+
+	public void CallMonsters()
+	{
+		if (!_selectedCow)
+		{
+			return;
+		}
+
+		_selectedCow.CallMonsters();
+	}
+	#endregion
+
 }

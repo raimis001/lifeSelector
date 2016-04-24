@@ -2,32 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Cow : MonoBehaviour
+public class Cow : BaseObject
 {
 
-	public float MaxHitpoints = 100;
-	public float Hitpoints;
-
-	public float Hp
-	{
-		get { return Hitpoints/MaxHitpoints; }
-	}
-
-	private bool MoveToDestination;
-	private Vector3 _destination;
-	public Vector3 Destination
-	{
-		get { return _destination; }
-		set
-		{
-			_destination = value;
-
-			Mover m = GetComponent<Mover>();
-			if (m) m.MoveToPosition(_destination);
-		}
-	}
-
-	public float MoveSpeed = 1;
+	public GameObject RadarPlane;
 
 	public AttackParams Attack;
 
@@ -37,31 +15,55 @@ public class Cow : MonoBehaviour
 		get { return _monsters.Count; }
 	}
 
-	private List<Monster> _monsters = new List<Monster>();
+	private readonly List<Monster> _monsters = new List<Monster>();
 
 
 	// Use this for initialization
-	void Start()
+	protected override void Start()
 	{
-		Hitpoints = MaxHitpoints;
+		base.Start();
+		AllowRandomMove = false;
 	}
 
 	// Update is called once per frame
-	void Update()
+	protected override void Update()
 	{
+		base.Update();
 
+		if (RadarPlane)
+		{
+			RadarPlane.transform.localScale = new Vector3(Attack.RadarRange * 0.5f,1, Attack.RadarRange * 0.5f);
+
+			Vector3 plane = transform.position;
+			plane.y = RadarPlane.transform.position.y;
+			RadarPlane.transform.position = plane;
+		}
+
+		//Enemy[] enemys = FindObjectsOfType<Enemy>();
+		//Log(Distance(enemys[0]));
+		
 	}
 
-	void OnMouseUp()
+	protected override void OnMouseClick()
 	{
-		Debug.Log("You click a cow!");
 		GameLogic.SelectedCow = this;
+	}
 
+	public void Select()
+	{
+		if (RadarPlane) RadarPlane.SetActive(true);
+	}
+
+	public void Deselect()
+	{
+		if (RadarPlane) RadarPlane.SetActive(false);
 	}
 
 	public void CallMonsters()
 	{
-		
+		Monster[] monsters = FindObjectsOfType<Monster>();
+		Debug.Log(monsters.Length);
+
 	}
 
 	public void ReleaseMonsters()

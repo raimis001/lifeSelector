@@ -1,55 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Monster : MonoBehaviour
+public class Monster : BaseObject
 {
 
-	public float MaxHitpoints = 100;
-	public float Hitpoints;
+	[HideInInspector]
 	public Cow CurrentCow;
-
-
-	public float Live = 200;
-	public float LiveModiefier = 1;
-
-	// Use this for initialization
-	void Start () {
-		Hitpoints = MaxHitpoints;
-	}
 	
-	// Update is called once per frame
-	void Update ()
+	public static void Create(GameObject monsterPrefab,GameObject monsterObject,  GameObject spawnPoint)
 	{
-		Live -= LiveModiefier*Time.deltaTime;
-		if (!CheckIsLive())
-		{
-			Destroy(gameObject);
-			return;
-		}
+		GameObject obj = Instantiate(monsterPrefab);
+		obj.name = "monster";
+		obj.transform.SetParent(monsterObject.transform);
+		obj.transform.position = spawnPoint ? spawnPoint.transform.position : Vector3.zero;
 
+		//Monster monster = obj.GetComponent<Monster>();
 	}
 
-	bool CheckIsLive()
-	{
-		return Live > 0 && Hitpoints > 0;
-	}
-
-	void RandomizeMove()
-	{
-
-		Stimulus[] stimuli = GameObject.FindObjectsOfType<Stimulus>();
-		foreach (Stimulus stimulus in stimuli)
-		{
-			if (Vector3.Distance(transform.position, stimulus.transform.position) < stimulus.Radiuss)
-			{
-				//AddForce(stimulus);
-			}
-		}
-	}
-
-
-	void Log(object message)
-	{
-		Debug.Log(message);
-	}
 }

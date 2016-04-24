@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class TerrainManager : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class TerrainManager : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-
+		/*
 		if (Input.GetMouseButtonUp(0))
 		{
 
@@ -40,6 +41,23 @@ public class TerrainManager : MonoBehaviour
 				}
 
 			}
+		}
+		*/
+	}
+
+	void OnMouseUp()
+	{
+		if (EventSystem.current && EventSystem.current.IsPointerOverGameObject())
+		{
+			return;
+		}
+
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (GetComponent<Collider>().Raycast(ray, out hit, Mathf.Infinity))
+		{
+			Debug.Log("TERRAIN: hit on terrain");
+			if (OnTerrainClick != null) OnTerrainClick(hit.point);
 		}
 	}
 }

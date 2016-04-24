@@ -5,14 +5,11 @@ using UnityEngineInternal;
 public class Gui : MonoBehaviour
 {
 
-	private static Gui _instance;
-	public static Gui Instance { get { return _instance; } }
-
 	public guiCowPanel CowPanel;
 
 	void Awake()
 	{
-		_instance = this;
+		The.Gui = this;
 	}
 
 	// Use this for initialization
@@ -31,12 +28,12 @@ public class Gui : MonoBehaviour
 	{
 		if (cow)
 		{
-			Instance.CowPanel.SelecteCow = cow;
-			Instance.PanelOpen(Instance.CowPanel.gameObject);
+			The.Gui.CowPanel.SelecteCow = cow;
+			The.Gui.PanelOpen(The.Gui.CowPanel.gameObject);
 			return;
 		}
 
-		Instance.PanelClose(Instance.CowPanel.gameObject);
+		The.Gui.PanelClose(The.Gui.CowPanel.gameObject);
 	}
 
 	public void CowPanelClose()
