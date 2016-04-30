@@ -9,7 +9,7 @@ public class Bullet : MonoBehaviour
 
 	private string _tag;
 	private float _time = 2;
-	private float _damage;
+	public float _damage;
 
 	public static void Create(BaseObject baseObject, BaseObject targetObject, string tag, AttackParams attack)
 	{
@@ -19,7 +19,16 @@ public class Bullet : MonoBehaviour
 		Bullet bullet = obj.GetComponent<Bullet>();
 		bullet.Target = targetObject.Position;
 		bullet._tag = tag;
+		bullet.tag = tag.Equals(TagKind.Enemy.ToString()) ? TagKind.Monster.ToString() : TagKind.Enemy.ToString();
 		bullet._damage = attack.AttackDamage;
+
+		GameObject[] alies = GameObject.FindGameObjectsWithTag(bullet.tag);
+
+		foreach (GameObject aly in alies)
+		{
+			Physics.IgnoreCollision(bullet.GetComponent<Collider>(),aly.GetComponent<Collider>());
+		}
+
 	}
 
 	// Use this for initialization
@@ -47,9 +56,10 @@ public class Bullet : MonoBehaviour
 
 		if (collision.gameObject.tag.Equals(_tag))
 		{
-			BaseObject enemy = collision.gameObject.GetComponent<Enemy>();
+			BaseObject enemy = collision.gameObject.GetComponent<BaseObject>();
 			if (enemy)
 			{
+				//Debug.Log("Bullte damage to object:" + _tag + " with damage:" + _damage);
 				enemy.DoDamage(_damage);
 			}
 

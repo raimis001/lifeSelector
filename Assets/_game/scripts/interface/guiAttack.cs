@@ -17,7 +17,7 @@ public class guiAttack : MonoBehaviour
 		{
 			_params = value;
 
-			if (RadarText) RadarText.text = _params.RadarRange.ToString("0");
+			//if (RadarText) RadarText.text = _params.RadarRange.ToString("0");
 			if (AttackRangeText) AttackRangeText.text = _params.AttackRange.ToString("0");
 			if (AttackDamageText) AttackDamageText.text = _params.AttackDamage.ToString("0");
 			if (AttackSpeedText) AttackSpeedText.text = _params.AttackSpeed.ToString("0.00");
@@ -26,15 +26,5 @@ public class guiAttack : MonoBehaviour
 		}
 	}
 
-	// Use this for initialization
-	void Start()
-	{
 
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
 }

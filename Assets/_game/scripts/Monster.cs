@@ -5,8 +5,41 @@ using System.ComponentModel;
 public class Monster : BaseObject
 {
 
-	[HideInInspector]
-	public BaseObject Actor;
+	private Cow _actor;
+	public Cow Actor
+	{
+		get { return _actor; }
+		set
+		{
+			if (_actor)
+			{
+				_actor.Monsters.Remove(this);
+			}
+			_actor = value;
+			if (_actor)
+			{
+				_actor.Monsters.Add(this);
+			}
+			else
+			{
+				MotherActivity[] mothers = FindObjectsOfType<MotherActivity>();
+
+				foreach (MotherActivity mother in mothers)
+				{
+					if (mother.Cow.AllowMonsters())
+					{
+						_actor = mother.Cow;
+						_actor.Monsters.Add(this);
+						break;
+					}
+				}
+
+			}
+
+			Enemy = null;
+
+		}
+	}
 
 	[HideInInspector]
 	public BaseObject Enemy;
@@ -15,21 +48,29 @@ public class Monster : BaseObject
 
 	private BulletManager _bulletManager;
 
-	public static void Create( GameObject spawnPoint)
+
+	public static Monster Create( GameObject spawnPoint)
+	{
+		return Create(spawnPoint ? spawnPoint.transform.position : Vector3.zero);
+	}
+	public static Monster Create(Vector3 spawnPoint)
 	{
 		GameObject obj = Instantiate(The.GameLogic.MonsterPrefab);
-		obj.name = "monster";
 		obj.transform.SetParent(The.GameLogic.MonsterHolder.transform);
-		obj.transform.position = spawnPoint ? spawnPoint.transform.position : Vector3.zero;
+		obj.transform.position = spawnPoint;
 
-		//Monster monster = obj.GetComponent<Monster>();
+		return obj.GetComponent<Monster>();
+	}
+
+	void Awake()
+	{
+		name = "monster";
 	}
 
 	protected override void Start()
 	{
 		base.Start();
 		_line = gameObject.AddComponent<LineRenderer>();
-		//Material whiteDiffuseMat = new Material(Shader.Find("Unlit/Texture"));
 		_line.material = new Material(Shader.Find("Particles/Additive"));
 		_line.SetColors(Color.blue, Color.black);
 		_line.SetWidth(0.1f, 0.1f);
@@ -41,25 +82,33 @@ public class Monster : BaseObject
 	protected override void Update()
 	{
 
-		if (Enemy && Actor is Cow)
+		base.Update();
+		if (!Actor && Enemy)
 		{
+			Enemy = null;
+		}
+
+		if (Actor && Enemy && Actor.Activitie<AttackActivity>())
+		{
+			AttackParams attack = Actor.Activitie<AttackActivity>().Attack;
+
 			_line.enabled = true;
 			_line.SetPosition(0, transform.position);
 			_line.SetPosition(1, Enemy.transform.position);
-			if (Distance(Enemy) > ((Cow) Actor).Attack.AttackRange)
+
+			if (Distance(Enemy) > attack.AttackRange)
 			{
-				Log(Distance(Enemy));
+				//Log(Distance(Enemy));
 				MoveToPosition(Enemy.Position);
 			}
 			else
 			{
-				_bulletManager.Shot(this, Enemy, "Enemy", ((Cow)Actor).Attack);
+				_bulletManager.Shot(this, Enemy, "Enemy", attack);
 				Stop();
 			}
 			return;
 		}
 
-		base.Update();
 
 		if (Actor)
 		{
@@ -74,6 +123,16 @@ public class Monster : BaseObject
 
 	}
 
+	protected override void BeforeDestroy()
+	{
+		//Debug.Log("Monster destroy!");
+		if (Actor)
+		{
+			Actor.Monsters.Remove(this);
+		}
+		_actor = null;
+		Enemy = null;
+	}
 
 	protected override void RandomizeMove()
 	{
@@ -87,4 +146,10 @@ public class Monster : BaseObject
 			}
 		}
 	}
+
+	public bool IsFree()
+	{
+		return !Actor || Actor.GetComponent<MotherActivity>();
+	}
+
 }

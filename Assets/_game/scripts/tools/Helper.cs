@@ -1,14 +1,20 @@
 ﻿using System;
 using UnityEngine;
 
+public enum TagKind
+{
+	Monster,
+	Enemy
+}
+
 public static class Helper 
 {
 	
-	public static Vector3 Random(this Vector3 vector)
+	public static Vector3 Random(this Vector3 vector, bool yzero = false)
 	{
 		Vector3 v = new Vector3();
 		v.x = UnityEngine.Random.Range(-1f, 1f);
-		v.y = UnityEngine.Random.Range(-1f, 1f);
+		v.y = yzero ? 0 : UnityEngine.Random.Range(-1f, 1f);
 		v.z = UnityEngine.Random.Range(-1f, 1f);
 		//Debug.Log(v);
 		
@@ -32,6 +38,27 @@ public static class Helper
 	{
 		return (int)value;
 	}
+	public static GameObject FindClosestObject(Vector3 position, string tag, float radius = Mathf.Infinity)
+	{
+		GameObject[] gos = GameObject.FindGameObjectsWithTag(tag);
+		GameObject closest = null;
+		float distance = Mathf.Infinity;
+		float border = radius * radius;
+
+		foreach (GameObject go in gos)
+		{
+			Vector3 diff = go.transform.position - position;
+			float curDistance = diff.sqrMagnitude;
+			if (curDistance < border && curDistance < distance)
+			{
+				closest = go;
+				distance = curDistance;
+			}
+		}
+		return closest;
+	}
+
+
 }
 
 public class DefenceParams
@@ -42,7 +69,6 @@ public class DefenceParams
 [Serializable]
 public class AttackParams
 {
-	public float RadarRange = 3f;
 	public float AttackRange = 1f;
 	public float AttackDamage = 1f;
 	public float AttackSpeed = 0.1f;

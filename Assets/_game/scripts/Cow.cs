@@ -5,17 +5,15 @@ using System.Collections.Generic;
 public class Cow : BaseObject
 {
 
-	public GameObject RadarPlane;
-
-	public AttackParams Attack;
+	public float RadarRange = 3;
 
 	public int MaxMonsterCount = 2;
 	public int MonsterCount
 	{
-		get { return _monsters.Count; }
+		get { return Monsters.Count; }
 	}
 
-	private readonly List<Monster> _monsters = new List<Monster>();
+	public List<Monster> Monsters = new List<Monster>();
 
 
 	// Use this for initialization
@@ -25,53 +23,11 @@ public class Cow : BaseObject
 		AllowRandomMove = false;
 	}
 
-	// Update is called once per frame
-	protected override void Update()
-	{
-		base.Update();
-
-		if (RadarPlane)
-		{
-			RadarPlane.transform.localScale = new Vector3(Attack.RadarRange * 0.5f,1, Attack.RadarRange * 0.5f);
-
-			Vector3 plane = transform.position;
-			plane.y = RadarPlane.transform.position.y;
-			RadarPlane.transform.position = plane;
-		}
-
-		Enemy[] enemys = FindObjectsOfType<Enemy>();
-		foreach (Enemy enemy in enemys)
-		{
-			if (Distance(enemy) < Attack.RadarRange)
-			{
-				foreach (Monster monster in _monsters)
-				{
-					if (!monster.Enemy)
-					{
-						monster.Enemy = enemy;
-					}
-				}
-				break;
-			}
-		}
-		//Log(Distance(enemys[0]));
-		
-	}
-
 	protected override void OnMouseClick()
 	{
 		GameLogic.SelectedCow = this;
 	}
 
-	public void Select()
-	{
-		if (RadarPlane) RadarPlane.SetActive(true);
-	}
-
-	public void Deselect()
-	{
-		if (RadarPlane) RadarPlane.SetActive(false);
-	}
 
 	public void CallMonsters()
 	{
@@ -81,39 +37,47 @@ public class Cow : BaseObject
 		}
 
 		Monster[] monsters = FindObjectsOfType<Monster>();
-		Debug.Log(monsters.Length);
 
 		foreach (Monster monster in monsters)
 		{
-			if (monster.Actor != null ) continue;
+			if (!monster.IsFree()) continue;
 			monster.Actor = this;
-			_monsters.Add(monster);
 			if (MonsterCount >= MaxMonsterCount) break;
 		}
 	}
 
+
+
 	public void ReleaseMonsters()
 	{
-		foreach (Monster monster in _monsters)
+		while (Monsters.Count > 0)
 		{
-			monster.Enemy = null;
-			monster.Actor = null;
+			Monsters[0].Actor = null;
 		}
 
-		_monsters.Clear();
+		Monsters.Clear();
 	}
 
-	public bool AddMonster(Monster monster)
+	public override void Select()
 	{
-		if (MonsterCount >= MaxMonsterCount || monster.Actor != null)
-		{
-			return false;
-		}
-
-		_monsters.Add(monster);
-		monster.Actor = this;
-
-		return true;
-
+		base.Select();
+		The.GameLogic.Radar.Attach(this);
 	}
+
+	public override void Deselect()
+	{
+		base.Deselect();
+		The.GameLogic.Radar.Hide();
+	}
+
+	public bool AllowMonsters()
+	{
+		return MaxMonsterCount > MonsterCount;
+	}
+
+	public T Activitie<T>() where T : Activity
+	{
+		return GetComponent<T>();
+	}
+
 }

@@ -5,15 +5,19 @@ public class GameLogic : MonoBehaviour
 {
 
 	public GameObject SpawnPoint;
+	public GameObject EnemyPoint;
 
 	public GameObject Cursor;
+	public Radar Radar;
 
 	[Header("Holders")]
 	public GameObject MonsterHolder;
 	public GameObject BulletHolder;
+	public GameObject EnemyHolder;
 
 	[Header("Prefabs")]
 	public GameObject MonsterPrefab;
+	public GameObject EnemyPrefab;
 	public GameObject BulletPrefab;
 	public GameObject DestroyParticle;
 
@@ -104,14 +108,14 @@ public class GameLogic : MonoBehaviour
 		_spawning = false;
 	}
 
-	IEnumerator SpawnMonster()
+	IEnumerator SpawnMonster(bool monster = true)
 	{
 		float spawnTime = 0.1f;
 		while (_spawning)
 		{
 			if (spawnTime <= 0)
 			{
-				AddMonster();
+				if (monster) AddMonster(); else AddEnemy();
 				spawnTime = 0.1f;
 				continue;
 			}
@@ -141,4 +145,21 @@ public class GameLogic : MonoBehaviour
 	}
 	#endregion
 
+	#region ENEMIES
+	public void AddEnemy()
+	{
+		Enemy.Create(EnemyPoint);
+	}
+
+	public void StartSpawnEnemys()
+	{
+		if (_spawning) return;
+
+		AddEnemy();
+		_spawning = true;
+		StartCoroutine(SpawnMonster(false));
+	}
+
+
+	#endregion
 }

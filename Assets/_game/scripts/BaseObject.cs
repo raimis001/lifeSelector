@@ -11,6 +11,9 @@ public class BaseObject : Mover
 	public float Live = Mathf.Infinity;
 	public float LiveModiefier = 1;
 
+	[Header("Interface")]
+	public guiProgress Progress;
+
 	public float Hp {
 		get { return Hitpoints / MaxHitpoints; }
 	}
@@ -27,10 +30,44 @@ public class BaseObject : Mover
 		Live -= LiveModiefier * Time.deltaTime;
 		if (!CheckIsLive())
 		{
-			Destroy(gameObject);
+			DoDestroy();
 		}
+
+		if (Progress)
+		{
+			Progress.Value = Hp;
+		}
+
 	}
 
+	public virtual void Select()
+	{
+
+		Activity[] activities = GetComponents<Activity>();
+
+		foreach (Activity activity in activities)
+		{
+			activity.Select();
+		}
+
+	}
+
+	public virtual void Deselect()
+	{
+
+		Activity[] activities = GetComponents<Activity>();
+
+		foreach (Activity activity in activities)
+		{
+			activity.Select();
+		}
+
+	}
+
+	protected virtual void BeforeDestroy()
+	{
+		
+	}
 	public Vector3 Position
 	{
 		get
@@ -49,11 +86,13 @@ public class BaseObject : Mover
 	public void DoDamage(float damage)
 	{
 		Hitpoints -= damage;
-		if (Hitpoints <= 0)
-		{
-			The.GameLogic.DoExplosion(transform.position);
-			Destroy(gameObject);
-		}
+	}
+
+	protected void DoDestroy()
+	{
+		The.GameLogic.DoExplosion(transform.position);
+		BeforeDestroy();
+		Destroy(gameObject);
 	}
 
 	bool CheckIsLive()
