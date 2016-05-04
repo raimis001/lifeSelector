@@ -10,18 +10,27 @@ public class Enemy : BaseObject
 	private BaseObject _enemyObject;
 	private BulletManager _bulletManager;
 
-
-	public static Monster Create(GameObject spawnPoint)
+	public static Enemy Create(Transform spawnPoint, WaveAttack attackParams)
 	{
-		return Create(spawnPoint ? spawnPoint.transform.position : Vector3.zero);
+		Enemy enemy = Create(spawnPoint);
+
+		enemy.Attack = attackParams.Params;
+		enemy.MovingSpeed = attackParams.Speed;
+
+		return enemy;
 	}
-	public static Monster Create(Vector3 spawnPoint)
+
+public static Enemy Create(Transform spawnPoint)
+	{
+		return Create(spawnPoint ? spawnPoint.position : Vector3.zero);
+	}
+	public static Enemy Create(Vector3 spawnPoint)
 	{
 		GameObject obj = Instantiate(The.GameLogic.EnemyPrefab);
 		obj.transform.SetParent(The.GameLogic.EnemyHolder.transform);
 		obj.transform.position = spawnPoint;
 
-		return obj.GetComponent<Monster>();
+		return obj.GetComponent<Enemy>();
 	}
 
 	protected override void Start()

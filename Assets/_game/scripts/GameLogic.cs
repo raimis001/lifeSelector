@@ -148,7 +148,7 @@ public class GameLogic : MonoBehaviour
 	#region ENEMIES
 	public void AddEnemy()
 	{
-		Enemy.Create(EnemyPoint);
+		Enemy.Create(EnemyPoint.transform);
 	}
 
 	public void StartSpawnEnemys()
