@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngineInternal;
+using UnityEngine.UI;
 
 public class Gui : MonoBehaviour
 {
 
 	public guiCowPanel CowPanel;
 
+	public Text SulaText;
+	
 	void Awake()
 	{
 		The.Gui = this;
@@ -21,7 +22,7 @@ public class Gui : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-
+		if (SulaText) SulaText.text = GameLogic.Sula.ToString();
 	}
 
 	public static void SetCow(Cow cow)

@@ -11,10 +11,10 @@ public class Bullet : MonoBehaviour
 	private float _time = 2;
 	public float _damage;
 
-	public static void Create(BaseObject baseObject, BaseObject targetObject, string tag, AttackParams attack)
+	public static void Create(BaseObject moveObject, BaseObject targetObject, string tag, AttackParams attack)
 	{
 		GameObject obj = Instantiate(The.GameLogic.BulletPrefab);
-		obj.transform.position = baseObject.Position + (targetObject.Position - baseObject.Position).normalized * 0.7f + new Vector3(0,0.5f,0);
+		obj.transform.position = moveObject.Position + (targetObject.Position - moveObject.Position).normalized * 0.7f + new Vector3(0,0.5f,0);
 
 		Bullet bullet = obj.GetComponent<Bullet>();
 		bullet.Target = targetObject.Position;
@@ -56,7 +56,7 @@ public class Bullet : MonoBehaviour
 
 		if (collision.gameObject.tag.Equals(_tag))
 		{
-			BaseObject enemy = collision.gameObject.GetComponent<BaseObject>();
+			MoveObject enemy = collision.gameObject.GetComponent<MoveObject>();
 			if (enemy)
 			{
 				//Debug.Log("Bullte damage to object:" + _tag + " with damage:" + _damage);

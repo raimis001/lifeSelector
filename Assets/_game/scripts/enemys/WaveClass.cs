@@ -11,9 +11,6 @@ public class WaveClass
 	public List<WaveAttack> Monsters = new List<WaveAttack>();
 	public bool Active;
 
-	private float _born;
-	private int _currentMonster;
-
 	public WaveClass()
 	{
 		Monsters.Add(new WaveAttack());
@@ -26,8 +23,6 @@ public class WaveClass
 			yield break;
 		}
 
-		_born = BornTime;
-		_currentMonster = 0;
 		Active = true;
 
 		foreach (WaveAttack monster in Monsters)

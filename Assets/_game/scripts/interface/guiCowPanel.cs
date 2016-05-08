@@ -9,12 +9,29 @@ public class guiCowPanel : MonoBehaviour
 	public Text MaxMonsters;
 	public Text CurrentMonsters;
 
+	public GameObject MotherPanel;
+
 	private Cow _selectedCow;
 	public Cow SelecteCow
 	{
 		set
 		{
 			_selectedCow = value;
+			if (!_selectedCow) return;
+
+			CowActivity activity = _selectedCow.GetComponent<CowActivity>();
+			if (!activity)
+			{
+				Debug.Log("Not cow activitie");
+
+				//AttackPanel.gameObject.SetActive(false);
+				//MotherPanel.SetActive(false);
+				//return;
+			}
+
+			AttackPanel.gameObject.SetActive(activity is AttackActivity);
+			MotherPanel.SetActive(activity is MotherActivity);
+
 		}
 	}
 
@@ -37,5 +54,21 @@ public class guiCowPanel : MonoBehaviour
 			MaxMonsters.text = _selectedCow.MaxMonsterCount.ToString("0");
 			CurrentMonsters.text = _selectedCow.MonsterCount.ToString("0");
 		}
+	}
+
+	public void CreateCow()
+	{
+		if (_selectedCow == null)
+		{
+			return;
+		}
+		MotherActivity activity = _selectedCow.GetComponent<MotherActivity>();
+		if (!activity)
+		{
+			Debug.LogError("Not cow activitie");
+			return;
+		}
+
+		activity.SpawnCow();
 	}
 }

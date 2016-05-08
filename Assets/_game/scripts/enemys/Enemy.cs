@@ -2,12 +2,12 @@
 using UnityEngine;
 using System.Collections;
 
-public class Enemy : BaseObject
+public class Enemy : MoveObject
 {
 
 	public AttackParams Attack;
 
-	private BaseObject _enemyObject;
+	private MoveObject _enemyObject;
 	private BulletManager _bulletManager;
 
 	public static Enemy Create(Transform spawnPoint, WaveAttack attackParams)
@@ -49,7 +49,7 @@ public static Enemy Create(Transform spawnPoint)
 			GameObject obj = Helper.FindClosestObject(transform.position, TagKind.Monster.ToString());
 			if (obj)
 			{
-				_enemyObject = obj.GetComponent<BaseObject>();
+				_enemyObject = obj.GetComponent<MoveObject>();
 			}
 		}
 
@@ -66,9 +66,5 @@ public static Enemy Create(Transform spawnPoint)
 			}
 			
 		}
-
-		
-
-
 	}
 }

@@ -41,6 +41,7 @@ public class EnemyManager : MonoBehaviour
 		if (_currentWave >= Waves.Count)
 		{
 			Debug.Log("Waves ended count:" + Waves.Count + " current:" + _currentWave);
+			enabled = false;
 			return;
 		}
 

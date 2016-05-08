@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum TagKind
@@ -7,9 +8,9 @@ public enum TagKind
 	Enemy
 }
 
-public static class Helper 
+public static class Helper
 {
-	
+
 	public static Vector3 Random(this Vector3 vector, bool yzero = false)
 	{
 		Vector3 v = new Vector3();
@@ -17,7 +18,7 @@ public static class Helper
 		v.y = yzero ? 0 : UnityEngine.Random.Range(-1f, 1f);
 		v.z = UnityEngine.Random.Range(-1f, 1f);
 		//Debug.Log(v);
-		
+
 		return v;
 	}
 
@@ -31,19 +32,20 @@ public static class Helper
 	{
 		Vector3 delta = vector - destination;
 		//Vector3 dir = delta/delta.magnitude;
-		return delta/ delta.magnitude;
+		return delta/delta.magnitude;
 	}
 
 	public static int ToInt(this float value)
 	{
-		return (int)value;
+		return (int) value;
 	}
+
 	public static GameObject FindClosestObject(Vector3 position, string tag, float radius = Mathf.Infinity)
 	{
 		GameObject[] gos = GameObject.FindGameObjectsWithTag(tag);
 		GameObject closest = null;
 		float distance = Mathf.Infinity;
-		float border = radius * radius;
+		float border = radius*radius;
 
 		foreach (GameObject go in gos)
 		{
@@ -58,6 +60,56 @@ public static class Helper
 		return closest;
 	}
 
+	public static T FindClosestTarget<T>(Vector3 position, float distance) where T : BaseObject
+	{
+		T[] objs = GameObject.FindObjectsOfType<T>();
+		T closest = null;
+		float dist = Mathf.Infinity;
+
+		foreach (var obj in objs)
+		{
+			float d = Vector3.Distance(position, obj.Position);
+
+			if (d <= distance && d < dist)
+			{
+				closest = obj;
+				dist = d;
+			}
+		}
+
+		return closest;
+	}
+
+	public static IEnumerable<Enemy> EnemyInRange(Vector3 position, float distance)
+	{
+		Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
+		foreach (Enemy enemy in enemys)
+		{
+			if (Vector3.Distance(position, enemy.Position) <= distance)
+			{
+				yield return enemy;
+			}
+		}
+	}
+
+
+
+	public static Enemy FindClosestEnemy(Vector3 position, float distance)
+	{
+		float dist = Mathf.Infinity;
+		Enemy closest = null;
+		foreach (Enemy enemy in EnemyInRange(position, distance))
+		{
+			float d = Vector3.Distance(position, enemy.Position);
+			if (d < dist)
+			{
+				dist = d;
+				closest = enemy;
+			}
+		}
+
+		return closest;
+	}
 
 }
 

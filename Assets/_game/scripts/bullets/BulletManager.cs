@@ -9,7 +9,7 @@ public class BulletManager : MonoBehaviour
 	private bool _shoting;
 	private float _shotTime;
 
-	public void Shot(BaseObject parent, BaseObject target, string tag, AttackParams attack)
+	public void Shot(MoveObject parent, BaseObject target, string tag, AttackParams attack)
 	{
 		if (_shoting) return;
 

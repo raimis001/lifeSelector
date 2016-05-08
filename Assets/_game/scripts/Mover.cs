@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class Mover : MonoBehaviour
+public class Mover : BaseObject
 {
 	[Range(0, 5)]
 	public float MovingSpeed = 1;
@@ -82,6 +82,11 @@ public class Mover : MonoBehaviour
 		_velocity = Vector3.zero;
 		_rigibody.velocity = Vector3.zero;
 		_rigibody.angularVelocity = Vector3.zero;
+	}
+
+	public void MoveToPosition(BaseObject actor)
+	{
+		MoveToPosition(actor.Position);
 	}
 
 	public void MoveToPosition(Vector3 position)

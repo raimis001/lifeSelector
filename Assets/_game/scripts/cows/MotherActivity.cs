@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MotherActivity : Activity
+public class MotherActivity : CowActivity
 {
 
 	public float SpawnTime = 100;
+	public int CowSpawnCount = 5;
 
 	private float _spawnTime;
+	private bool _spawnCow;
 
 	protected override void Start()
 	{
@@ -22,6 +24,11 @@ public class MotherActivity : Activity
 			return;
 		}
 
+		if (_spawnCow)
+		{
+			return;
+		}
+
 		_spawnTime -= Time.deltaTime;
 		if (_spawnTime <= 0)
 		{
@@ -29,5 +36,28 @@ public class MotherActivity : Activity
 			monster.Actor = Cow;
 			_spawnTime = SpawnTime;
 		}
+	}
+
+	public void SpawnCow()
+	{
+		if (Cow.MonsterCount < CowSpawnCount || _spawnCow)
+		{
+			return;
+		}
+		_spawnCow = true;
+
+		Monster m = Cow.Monsters[0];
+
+		for (int i = 0; i < Cow.Monsters.Count; i++)
+		{
+			CowMonster mm = Cow.Monsters[i].AddAction<CowMonster>(m);
+			mm.MainMonster = i == 0;
+			mm.Monster = m;
+		}
+	}
+
+	public void EndSpawn()
+	{
+		_spawnCow = false;
 	}
 }

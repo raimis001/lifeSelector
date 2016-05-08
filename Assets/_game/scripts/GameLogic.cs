@@ -14,14 +14,23 @@ public class GameLogic : MonoBehaviour
 	public GameObject MonsterHolder;
 	public GameObject BulletHolder;
 	public GameObject EnemyHolder;
+	public GameObject CowHolder;
 
 	[Header("Prefabs")]
 	public GameObject MonsterPrefab;
 	public GameObject EnemyPrefab;
 	public GameObject BulletPrefab;
 	public GameObject DestroyParticle;
+	public GameObject CowPrefab;
+
+	[Header("Effects")]
+	public GameObject DieEffect;
+	public GameObject CollideMonsterEffect;
+	public GameObject SpawnCowEffect;
 
 	private bool _spawning;
+
+	public static float Sula = 0;
 
 	private static Cow _selectedCow;
 	public static Cow SelectedCow
@@ -66,12 +75,10 @@ public class GameLogic : MonoBehaviour
 		}
 	}
 
-	public void DoExplosion(Vector3 position)
+	public void DoExplosion(Vector3 position, GameObject effect = null)
 	{
-		if (!DestroyParticle) return;
-
-		Instantiate(DestroyParticle, position, Quaternion.identity);
-
+		if (!effect && !DestroyParticle) return;
+		Instantiate(effect ? effect : DestroyParticle, position, Quaternion.identity);
 	}
 
 	public void OnTerrainClick(Vector3 position)

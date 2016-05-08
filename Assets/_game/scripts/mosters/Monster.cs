@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.ComponentModel;
 
-public class Monster : BaseObject
+public class Monster : MoveObject
 {
 
 	private Cow _actor;
@@ -35,19 +33,12 @@ public class Monster : BaseObject
 				}
 
 			}
-
-			Enemy = null;
+			RemoveAction();
 
 		}
 	}
 
-	[HideInInspector]
-	public BaseObject Enemy;
-
-	private LineRenderer _line;
-
-	private BulletManager _bulletManager;
-
+	private LineDrawer _line;
 
 	public static Monster Create( GameObject spawnPoint)
 	{
@@ -70,55 +61,31 @@ public class Monster : BaseObject
 	protected override void Start()
 	{
 		base.Start();
-		_line = gameObject.AddComponent<LineRenderer>();
-		_line.material = new Material(Shader.Find("Particles/Additive"));
-		_line.SetColors(Color.blue, Color.black);
-		_line.SetWidth(0.1f, 0.1f);
-
-		_bulletManager = gameObject.AddComponent<BulletManager>();
-
+		_line = gameObject.AddComponent<LineDrawer>();
 	}
 
 	protected override void Update()
 	{
 
 		base.Update();
-		if (!Actor && Enemy)
+
+		MonsterAction action = GetComponent<MonsterAction>();
+		if (!action && !Actor)
 		{
-			Enemy = null;
-		}
-
-		if (Actor && Enemy && Actor.Activitie<AttackActivity>())
-		{
-			AttackParams attack = Actor.Activitie<AttackActivity>().Attack;
-
-			_line.enabled = true;
-			_line.SetPosition(0, transform.position);
-			_line.SetPosition(1, Enemy.transform.position);
-
-			if (Distance(Enemy) > attack.AttackRange)
-			{
-				//Log(Distance(Enemy));
-				MoveToPosition(Enemy.Position);
-			}
-			else
-			{
-				_bulletManager.Shot(this, Enemy, "Enemy", attack);
-				Stop();
-			}
+			_line.enabled = false;
 			return;
 		}
 
-
-		if (Actor)
+		_line.Enabled = true;
+		if (action && action.Actor)
 		{
-			_line.enabled = true;
-			_line.SetPosition(0, transform.position);
-			_line.SetPosition(1, Actor.transform.position);
+			_line.FromPoint = transform;
+			_line.ToPoint = action.Actor.transform;
 		}
 		else
 		{
-			_line.enabled = false;
+			_line.FromPoint = transform;
+			_line.ToPoint = Actor.transform;
 		}
 
 	}
@@ -131,7 +98,7 @@ public class Monster : BaseObject
 			Actor.Monsters.Remove(this);
 		}
 		_actor = null;
-		Enemy = null;
+		RemoveAction();
 	}
 
 	protected override void RandomizeMove()
@@ -144,6 +111,26 @@ public class Monster : BaseObject
 			{
 				AddForce(Actor.transform, 100*(1 - 1/distance));
 			}
+		}
+	}
+	public T AddAction<T>(BaseObject enemy) where T : MonsterAction
+	{
+		T a = GetComponent<T>();
+		if (!a)
+		{
+			a = gameObject.AddComponent<T>();
+		}
+
+		a.Actor = enemy;
+		return a;
+	}
+
+	public void RemoveAction()
+	{
+		MonsterAction action = GetComponent<MonsterAction>();
+		if (action)
+		{
+			Destroy(action);
 		}
 	}
 

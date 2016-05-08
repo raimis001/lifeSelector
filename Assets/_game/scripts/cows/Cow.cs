@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Cow : BaseObject
+public class Cow : MoveObject
 {
 
 	public float RadarRange = 3;
@@ -15,6 +15,17 @@ public class Cow : BaseObject
 
 	public List<Monster> Monsters = new List<Monster>();
 
+
+	public static Cow Create(Vector3 position)
+	{
+		GameObject obj = Instantiate(The.GameLogic.CowPrefab);
+		obj.transform.SetParent(The.GameLogic.CowHolder.transform);
+		obj.transform.position = position;
+
+		The.GameLogic.DoExplosion(position, The.GameLogic.SpawnCowEffect);
+
+		return obj.GetComponent<Cow>();
+	}
 
 	// Use this for initialization
 	protected override void Start()
@@ -75,7 +86,7 @@ public class Cow : BaseObject
 		return MaxMonsterCount > MonsterCount;
 	}
 
-	public T Activitie<T>() where T : Activity
+	public T Activitie<T>() where T : CowActivity
 	{
 		return GetComponent<T>();
 	}
