@@ -31,6 +31,7 @@ public class Cow : MoveObject
 	protected override void Start()
 	{
 		base.Start();
+		DragObject = true;
 		AllowRandomMove = false;
 	}
 
@@ -90,5 +91,6 @@ public class Cow : MoveObject
 	{
 		return GetComponent<T>();
 	}
+
 
 }
