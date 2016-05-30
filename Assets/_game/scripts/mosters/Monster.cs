@@ -28,6 +28,12 @@ public class Monster : MoveObject
 					{
 						_actor = mother.Cow;
 						_actor.Monsters.Add(this);
+						MaxHitpoints = _actor.MonsterHitpoints;
+						if (Hitpoints > MaxHitpoints)
+						{
+							Hitpoints = MaxHitpoints;
+						}
+
 						break;
 					}
 				}
@@ -73,7 +79,7 @@ public class Monster : MoveObject
 		MonsterAction action = GetComponent<MonsterAction>();
 		if (!action && !Actor)
 		{
-			_line.enabled = false;
+			_line.Enabled = false;
 			return;
 		}
 

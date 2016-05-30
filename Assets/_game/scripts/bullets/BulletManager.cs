@@ -13,6 +13,8 @@ public class BulletManager : MonoBehaviour
 	{
 		if (_shoting) return;
 
+		ShotTime = attack.AttackSpeed;
+
 		_shotTime = ShotTime;
 		_shoting = true;
 

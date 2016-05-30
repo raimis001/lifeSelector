@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,7 +8,9 @@ public class Cow : MoveObject
 
 	public float RadarRange = 3;
 
+	[Header("Monsters")]
 	public int MaxMonsterCount = 2;
+	public int MonsterHitpoints = 100;
 	public int MonsterCount
 	{
 		get { return Monsters.Count; }
@@ -41,7 +44,6 @@ public class Cow : MoveObject
 		GameLogic.SelectedCow = this;
 	}
 
-
 	public void CallMonsters()
 	{
 		if (MonsterCount >= MaxMonsterCount)
@@ -55,6 +57,21 @@ public class Cow : MoveObject
 		{
 			if (!monster.IsFree()) continue;
 			monster.Actor = this;
+
+			if (Math.Abs(monster.MaxHitpoints - monster.Hitpoints) < 0.1f)
+			{
+				monster.MaxHitpoints = MonsterHitpoints;
+				monster.Hitpoints = MonsterHitpoints;
+			}
+			else
+			{
+				monster.MaxHitpoints = MonsterHitpoints;
+			}
+			if (monster.Hitpoints > monster.MaxHitpoints)
+			{
+				monster.Hitpoints = monster.MaxHitpoints;
+			}
+
 			if (MonsterCount >= MaxMonsterCount) break;
 		}
 	}
@@ -65,7 +82,9 @@ public class Cow : MoveObject
 	{
 		while (Monsters.Count > 0)
 		{
-			Monsters[0].Actor = null;
+			Monster monster = Monsters[0];
+			Monsters.Remove(monster);
+			monster.Actor = null;
 		}
 
 		Monsters.Clear();
