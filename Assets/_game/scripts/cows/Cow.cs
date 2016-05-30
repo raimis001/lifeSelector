@@ -33,6 +33,7 @@ public class Cow : MoveObject
 		base.Start();
 		DragObject = true;
 		AllowRandomMove = false;
+		AtackTag = "monster";
 	}
 
 	protected override void OnMouseClick()

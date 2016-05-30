@@ -53,19 +53,19 @@ public class Bullet : MonoBehaviour
 	private void OnCollisionEnter(Collision collision)
 	{
 		//Debug.Log(collision.gameObject.name);
+		MoveObject enemy = collision.gameObject.GetComponent<MoveObject>();
 
-		if (collision.gameObject.tag.Equals(_tag))
+		if (enemy)
 		{
-			MoveObject enemy = collision.gameObject.GetComponent<MoveObject>();
-			if (enemy)
+			if (enemy.AtackTag.Equals(_tag))
 			{
-				//Debug.Log("Bullte damage to object:" + _tag + " with damage:" + _damage);
 				enemy.DoDamage(_damage);
+				Destroy(gameObject);
 			}
-
-			Destroy(gameObject);
+			return;
 		}
 
+		Destroy(gameObject);
 
 	}
 

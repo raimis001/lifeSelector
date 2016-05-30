@@ -5,7 +5,8 @@ using UnityEngine;
 public enum TagKind
 {
 	Monster,
-	Enemy
+	Enemy,
+	Cow
 }
 
 public static class Helper

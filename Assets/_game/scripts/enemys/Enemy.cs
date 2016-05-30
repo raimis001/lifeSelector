@@ -20,7 +20,7 @@ public class Enemy : MoveObject
 		return enemy;
 	}
 
-public static Enemy Create(Transform spawnPoint)
+	public static Enemy Create(Transform spawnPoint)
 	{
 		return Create(spawnPoint ? spawnPoint.position : Vector3.zero);
 	}
@@ -38,6 +38,8 @@ public static Enemy Create(Transform spawnPoint)
 		base.Start();
 		_bulletManager = gameObject.AddComponent<BulletManager>();
 		AllowRandomMove = true;
+		AtackTag = "enemy";
+
 	}
 
 	protected override void Update()
@@ -47,6 +49,10 @@ public static Enemy Create(Transform spawnPoint)
 		//if (!_enemyObject)
 		{
 			GameObject obj = Helper.FindClosestObject(transform.position, TagKind.Monster.ToString());
+			if (!obj)
+			{
+				obj = Helper.FindClosestObject(transform.position, TagKind.Cow.ToString());
+			}
 			if (obj)
 			{
 				_enemyObject = obj.GetComponent<MoveObject>();
@@ -61,10 +67,10 @@ public static Enemy Create(Transform spawnPoint)
 			}
 			else
 			{
-				_bulletManager.Shot(this, _enemyObject, TagKind.Monster.ToString(), Attack);
+				_bulletManager.Shot(this, _enemyObject, "monster", Attack);
 				Stop();
 			}
-			
+
 		}
 	}
 }

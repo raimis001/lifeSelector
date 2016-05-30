@@ -62,6 +62,7 @@ public class Monster : MoveObject
 	{
 		base.Start();
 		_line = gameObject.AddComponent<LineDrawer>();
+		AtackTag = "monster";
 	}
 
 	protected override void Update()

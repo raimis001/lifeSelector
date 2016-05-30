@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [Serializable]
 public class EnemyManager : MonoBehaviour
 {
-	public List<WaveClass> Waves;
+	public List<WaveClass> Waves = new List<WaveClass>();
 	public float PauseTime = 5;
 
 	private int _currentWave = -1;

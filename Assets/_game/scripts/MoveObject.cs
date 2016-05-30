@@ -15,6 +15,9 @@ public class MoveObject : Mover
 	public guiProgress Progress;
 	public bool DragObject;
 
+	[HideInInspector]
+	public string AtackTag;
+
 	public float Hp {
 		get { return Hitpoints / MaxHitpoints; }
 	}
