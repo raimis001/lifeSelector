@@ -48,11 +48,7 @@ public class Enemy : MoveObject
 
 		//if (!_enemyObject)
 		{
-			GameObject obj = Helper.FindClosestObject(transform.position, TagKind.Monster.ToString());
-			if (!obj)
-			{
-				obj = Helper.FindClosestObject(transform.position, TagKind.Cow.ToString());
-			}
+			GameObject obj = Helper.FindClosestObject(transform.position, new []{TagKind.Monster.ToString(), TagKind.Cow.ToString() } );
 			if (obj)
 			{
 				_enemyObject = obj.GetComponent<MoveObject>();

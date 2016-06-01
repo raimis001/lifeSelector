@@ -41,21 +41,24 @@ public static class Helper
 		return (int) value;
 	}
 
-	public static GameObject FindClosestObject(Vector3 position, string tag, float radius = Mathf.Infinity)
+	public static GameObject FindClosestObject(Vector3 position, string[] tags, float radius = Mathf.Infinity)
 	{
-		GameObject[] gos = GameObject.FindGameObjectsWithTag(tag);
 		GameObject closest = null;
 		float distance = Mathf.Infinity;
 		float border = radius*radius;
 
-		foreach (GameObject go in gos)
+		foreach (string tag in tags)
 		{
-			Vector3 diff = go.transform.position - position;
-			float curDistance = diff.sqrMagnitude;
-			if (curDistance < border && curDistance < distance)
+			GameObject[] gos = GameObject.FindGameObjectsWithTag(tag);
+			foreach (GameObject go in gos)
 			{
-				closest = go;
-				distance = curDistance;
+				Vector3 diff = go.transform.position - position;
+				float curDistance = diff.sqrMagnitude;
+				if (curDistance < border && curDistance < distance)
+				{
+					closest = go;
+					distance = curDistance;
+				}
 			}
 		}
 		return closest;
