@@ -54,6 +54,9 @@ public class Monster : MoveObject
 	{
 		if (!Parent) return;
 		Genetic.AddGeneticValue(Parent.CurrentParams);
+
+		MaxHitpoints = Genetic.MonsterHitpoints;
+		if (Hitpoints > MaxHitpoints) Hitpoints = MaxHitpoints;
 	}
 
 	protected override void Start()
