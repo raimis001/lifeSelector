@@ -23,10 +23,10 @@ public class HarvestActivity : CowActivity
 			return;
 		}
 
-		foreach (Monster monster in Cow.Monsters)
-		{
+		//foreach (Monster monster in Cow.Monsters)
+		//{
 			//monster.AddAction<HarvestMonster>(stimulus);
-		}
+		//}
 
 	}
 }

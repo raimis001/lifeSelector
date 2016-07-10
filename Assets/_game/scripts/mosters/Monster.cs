@@ -57,6 +57,8 @@ public class Monster : MoveObject
 
 		MaxHitpoints = Genetic.MonsterHitpoints;
 		if (Hitpoints > MaxHitpoints) Hitpoints = MaxHitpoints;
+
+		MovingSpeed = The.GameLogic.Setup.DefaultCow.MonsterSpeed + Genetic.MonsterSpeed;
 	}
 
 	protected override void Start()
@@ -66,6 +68,8 @@ public class Monster : MoveObject
 		_line.FromPoint = transform;
 
 		AtackTag = "monster";
+
+		ApplayGenetic();
 	}
 
 	protected override void Update()

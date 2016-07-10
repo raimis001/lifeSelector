@@ -18,20 +18,6 @@ public class guiCowPanel : MonoBehaviour
 		{
 			_selectedCow = value;
 			if (!_selectedCow) return;
-
-			CowActivity activity = _selectedCow.GetComponent<CowActivity>();
-			if (!activity)
-			{
-				Debug.Log("Not cow activitie");
-
-				//AttackPanel.gameObject.SetActive(false);
-				//MotherPanel.SetActive(false);
-				//return;
-			}
-
-			AttackPanel.gameObject.SetActive(activity is AttackActivity);
-			MotherPanel.SetActive(activity is MotherActivity);
-
 		}
 	}
 

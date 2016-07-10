@@ -45,34 +45,10 @@ public class MoveObject : Mover
 
 	}
 
-	public virtual void Select()
-	{
-
-		CowActivity[] activities = GetComponents<CowActivity>();
-
-		foreach (CowActivity activity in activities)
-		{
-			activity.Select();
-		}
-
-	}
-
-	public virtual void Deselect()
-	{
-
-		CowActivity[] activities = GetComponents<CowActivity>();
-
-		foreach (CowActivity activity in activities)
-		{
-			activity.Select();
-		}
-
-	}
-
-	protected virtual void BeforeDestroy()
-	{
-		
-	}
+	public virtual void Select() { }
+	public virtual void Deselect() { }
+	protected virtual void BeforeDestroy() { }
+	protected virtual void OnMouseClick() { }
 
 	public float Distance(BaseObject obj)
 	{
@@ -100,18 +76,10 @@ public class MoveObject : Mover
 		return Live > 0 && Hitpoints > 0;
 	}
 
-
-	protected virtual void OnMouseClick()
-	{
-		
-	}
-
 	bool IsIntercat()
 	{
 		return !EventSystem.current || !EventSystem.current.IsPointerOverGameObject();
 	}
-
-
 
 	private bool _dragg;
 	private Vector3 _moseVector3 = Vector3.zero;
@@ -134,34 +102,32 @@ public class MoveObject : Mover
 	private void OnMouseUp()
 	{
 		if (!IsIntercat()) return;
-		Debug.Log("Mouse up: " + gameObject.name);
 		if (!_dragg) OnMouseClick();
-
 		if (!DragObject) return;
 
-		
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		
 		RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity);
 		foreach (RaycastHit hit in hits)
 		{
-			MoveObject obj = hit.collider.GetComponent<MoveObject>();
+			MoveObject otherObject = hit.collider.GetComponentInParent<MoveObject>();
 
-			if (obj)
+			if (otherObject && otherObject.GetHashCode() != this.GetHashCode()) 
 			{
-				Debug.Log("Ower:" + obj.name);
-				if (obj.GetHashCode() != this.GetHashCode())
-				Cow.Create(transform.position + Quaternion.Euler(0, Random.value * 360f, 0) * new Vector3(Random.value,0,Random.value) * 4f);
+				EndDrag(otherObject);
 				break;
 			}
 		}
 
-			if (_lineDrag) Destroy(_lineDrag);
+		if (_lineDrag) Destroy(_lineDrag);
 		_lineDrag = null;
 		_dragg = false;
 
 	}
 
+	protected virtual void EndDrag(MoveObject otherObject)
+	{
+		
+	}
 
 	private void OnMouseDrag()
 	{

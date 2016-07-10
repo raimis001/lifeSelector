@@ -46,7 +46,7 @@ public class MotherActivity : CowActivity
 		}
 		_spawnCow = true;
 
-		Monster m = Cow.Monsters[0];
+		//Monster m = Cow.Monsters[0];
 
 		for (int i = 0; i < Cow.Monsters.Count; i++)
 		{

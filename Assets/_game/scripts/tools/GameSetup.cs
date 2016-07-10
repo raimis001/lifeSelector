@@ -31,6 +31,8 @@ public class GeneticParams
 	public float MonsterCount;
 	public float MonsterHitpoints;
 
+	public float MonsterSpeed;
+
 	public float GeneticValue(List<GeneticProps> genetic, GeneticKind kind)
 	{
 		float result = 0;
@@ -86,6 +88,9 @@ public class GeneticParams
 				break;
 			case GeneticKind.MonsterHitpoints:
 				result = MonsterHitpoints;
+				break;
+			case GeneticKind.MonsterSpeed:
+				result = MonsterSpeed;
 				break;
 		}
 		return result;
@@ -147,6 +152,9 @@ public class GeneticParams
 			case GeneticKind.MonsterHitpoints:
 				MonsterHitpoints = value;
 				break;
+			case GeneticKind.MonsterSpeed:
+				MonsterSpeed = value;
+				break;
 		}
 	}
 
@@ -201,7 +209,9 @@ public enum GeneticKind
 	SpawnMonsters,
 	SpawnTime,
 	MonsterCount,
-	MonsterHitpoints
+	MonsterHitpoints,
+
+	MonsterSpeed
 }
 
 [Serializable]
