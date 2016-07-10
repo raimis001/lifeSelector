@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class MoveObject : Mover
 {
 
+	[Header("Live and hitpoints")]
 	public float MaxHitpoints = 100;
 	public float Hitpoints;
 

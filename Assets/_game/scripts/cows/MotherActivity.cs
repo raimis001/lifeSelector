@@ -33,7 +33,7 @@ public class MotherActivity : CowActivity
 		if (_spawnTime <= 0)
 		{
 			Monster monster = Monster.Create(transform.position + new Vector3().Random(true) * Cow.RadarRange + Vector3.down * 0.5f);
-			monster.Actor = Cow;
+			monster.Parent = Cow;
 			_spawnTime = SpawnTime;
 		}
 	}
@@ -50,9 +50,9 @@ public class MotherActivity : CowActivity
 
 		for (int i = 0; i < Cow.Monsters.Count; i++)
 		{
-			CowMonster mm = Cow.Monsters[i].AddAction<CowMonster>(m);
-			mm.MainMonster = i == 0;
-			mm.Monster = m;
+			//CowMonster mm = Cow.Monsters[i].AddAction<CowMonster>(m);
+			////mm.MainMonster = i == 0;
+			//mm.Monster = m;
 		}
 	}
 

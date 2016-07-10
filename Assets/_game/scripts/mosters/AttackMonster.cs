@@ -15,12 +15,12 @@ public class AttackMonster : MonsterAction
 	{
 		base.Update();
 
-		if (!Actor || !_monster || !_monster.Actor || !_monster.Actor.Activitie<AttackActivity>())
+		if (!Actor || !_monster || !_monster.Parent)
 		{
 			return;
 		}
-		
-		AttackParams attack = _monster.Actor.Activitie<AttackActivity>().Attack;
+
+		AttackParams attack = null;//_monster.Parent.Activitie<AttackActivity>().Attack;
 
 		if (_monster.Distance(Actor) > attack.AttackRange)
 		{

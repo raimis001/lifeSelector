@@ -46,10 +46,10 @@ public class guiCowPanel : MonoBehaviour
 	{
 		if (_selectedCow)
 		{
-			if (_selectedCow.Activitie<AttackActivity>())
-			{
-				AttackPanel.Params = _selectedCow.Activitie<AttackActivity>().Attack;
-			}
+			//if (_selectedCow.Activitie<AttackActivity>())
+			//{
+			//	AttackPanel.Params = _selectedCow.Activitie<AttackActivity>().Attack;
+			//}
 			HpSlider.value = _selectedCow.Hp;
 			MaxMonsters.text = _selectedCow.MaxMonsterCount.ToString("0");
 			CurrentMonsters.text = _selectedCow.MonsterCount.ToString("0");

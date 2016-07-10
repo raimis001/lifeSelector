@@ -1,23 +1,29 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class Cow : MoveObject
 {
-
 	public float RadarRange = 3;
-
+	
 	[Header("Monsters")]
 	public int MaxMonsterCount = 2;
 	public int MonsterHitpoints = 100;
-	public int MonsterCount
-	{
+	
+	public List<Monster> Monsters = new List<Monster>();
+	public int MonsterCount {
 		get { return Monsters.Count; }
 	}
 
-	public List<Monster> Monsters = new List<Monster>();
+	[Header("Genetic")]
+	public List<GeneticProps> Genetics = new List<GeneticProps>();
+	public GeneticParams Params = new GeneticParams();
+	private GeneticParams _currentParams = new GeneticParams();
 
+	private readonly List<int> _usedStimulus = new List<int>();
+
+	private float spawnTime;
 
 	public static Cow Create(Vector3 position)
 	{
@@ -30,13 +36,14 @@ public class Cow : MoveObject
 		return obj.GetComponent<Cow>();
 	}
 
-	// Use this for initialization
 	protected override void Start()
 	{
 		base.Start();
 		DragObject = true;
 		AllowRandomMove = false;
 		AtackTag = "monster";
+
+		RecalculateGenetic();
 	}
 
 	protected override void OnMouseClick()
@@ -56,27 +63,10 @@ public class Cow : MoveObject
 		foreach (Monster monster in monsters)
 		{
 			if (!monster.IsFree()) continue;
-			monster.Actor = this;
 
-			if (Math.Abs(monster.MaxHitpoints - monster.Hitpoints) < 0.1f)
-			{
-				monster.MaxHitpoints = MonsterHitpoints;
-				monster.Hitpoints = MonsterHitpoints;
-			}
-			else
-			{
-				monster.MaxHitpoints = MonsterHitpoints;
-			}
-			if (monster.Hitpoints > monster.MaxHitpoints)
-			{
-				monster.Hitpoints = monster.MaxHitpoints;
-			}
-
-			if (MonsterCount >= MaxMonsterCount) break;
+			monster.Parent = this;
 		}
 	}
-
-
 
 	public void ReleaseMonsters()
 	{
@@ -84,10 +74,15 @@ public class Cow : MoveObject
 		{
 			Monster monster = Monsters[0];
 			Monsters.Remove(monster);
-			monster.Actor = null;
+			monster.Parent = null;
 		}
 
 		Monsters.Clear();
+	}
+
+	public bool AllowMonsters()
+	{
+		return MaxMonsterCount > MonsterCount;
 	}
 
 	public override void Select()
@@ -102,15 +97,111 @@ public class Cow : MoveObject
 		The.GameLogic.Radar.Hide();
 	}
 
-	public bool AllowMonsters()
+	protected override void Update()
 	{
-		return MaxMonsterCount > MonsterCount;
+		base.Update();
+		
+		if (MonsterCount < MaxMonsterCount && _currentParams.SpawnMonsters > 0)
+		{
+			spawnTime -= Time.deltaTime;
+			if (spawnTime <= 0)
+			{
+				//TODO: spawn monsters
+				Monster monster = Monster.Create(transform.position + new Vector3().Random(true) * RadarRange + Vector3.down * 0.5f);
+				monster.Parent = this;
+				spawnTime = _currentParams.SpawnTime;
+			}
+		}
+
 	}
 
-	public T Activitie<T>() where T : CowActivity
+	public bool IsMother()
 	{
-		return GetComponent<T>();
+		return _currentParams.SpawnMonsters > 0;
 	}
+
+	#region Stimulus triggers
+	private IEnumerator _stimulusCoroutine;
+	public void OnTriggerEnter(Collider other)
+	{
+		Stimulus stimulus = other.GetComponentInParent<Stimulus>();
+		if (!stimulus) return;
+
+		if (!_usedStimulus.Contains(stimulus.StimulusId))
+		{
+			//Debug.Log("Start stimulus");
+			_stimulusCoroutine = UseStimulus(stimulus);
+			StartCoroutine(_stimulusCoroutine);
+		}
+
+	}
+	public void OnTriggerExit(Collider other)
+	{
+		Stimulus stimulus = other.GetComponentInParent<Stimulus>();
+		if (!stimulus) return;
+
+		if (_stimulusCoroutine != null)
+		{
+			StopCoroutine(_stimulusCoroutine);
+			_stimulusCoroutine = null;
+		}
+	}
+
+	public void OnTriggerStay(Collider other)
+	{
+		//Stimulus stimulus = other.GetComponentInParent<Stimulus>();
+		//if (!stimulus) return;
+	}
+
+	IEnumerator UseStimulus(Stimulus stimulus)
+	{
+		float wait = stimulus.ChargeTime;
+		while (wait > 0)
+		{
+			wait -= Time.deltaTime;
+			yield return null;
+		}
+
+		_stimulusCoroutine = null;
+
+		_usedStimulus.Add(stimulus.StimulusId);
+
+		//TODO: jāpievieno īpašības
+		Genetics.Add(GameLogic.GameSetup.GetGenetic(stimulus.RandomGenetic()));
+		Params.AddGenetic(Genetics);
+		RecalculateGenetic();
+	}
+
+	void RecalculateGenetic()
+	{
+		_currentParams.Reset();
+		foreach (GeneticKind kind in Helper.GetGeneticKinds())
+		{
+			_currentParams.SetGeneticValue(kind, GameLogic.GameSetup.DefaultCow.GeneticValue(kind) + Params.GeneticValue(kind));
+		}
+
+		MovingSpeed = _currentParams.MoveSpeed;
+		RadarRange = _currentParams.DetectRange;
+		spawnTime = _currentParams.SpawnTime;
+		MaxMonsterCount = (int)_currentParams.MonsterCount;
+
+		MaxHitpoints = _currentParams.Hitpoints;
+		if (Hitpoints > MaxHitpoints)
+		{
+			Hitpoints = MaxHitpoints;
+		}
+		//Debug.Log("Hitp:" + MaxHitpoints);
+
+		//TODO: jāapdeito monstri
+
+		foreach (Monster monster in Monsters)
+		{
+			monster.Genetic.AddGeneticValue(_currentParams);
+		}
+
+	}
+
+	#endregion
 
 
 }

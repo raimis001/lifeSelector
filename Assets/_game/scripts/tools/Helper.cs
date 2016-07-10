@@ -115,18 +115,26 @@ public static class Helper
 		return closest;
 	}
 
+	public static IEnumerable<GeneticKind> GetGeneticKinds()
+	{
+		Array enumstrings = Enum.GetValues(typeof(GeneticKind));
+		foreach (var enumstring in enumstrings)
+		{
+			GeneticKind kind = (GeneticKind)enumstring;
+			yield return kind;
+		}
+
+	}
+
+	public static Color CombineColors(params Color[] aColors)
+	{
+		Color result = new Color(0, 0, 0, 0);
+		foreach (Color c in aColors)
+		{
+			result += c;
+		}
+		result /= aColors.Length;
+		return result;
+	}
 }
 
-public class DefenceParams
-{
-	public float Damage;
-}
-
-[Serializable]
-public class AttackParams
-{
-	public float AttackRange = 1f;
-	public float AttackDamage = 1f;
-	public float AttackSpeed = 0.1f;
-	public float DefenceDamage = 1f;
-}

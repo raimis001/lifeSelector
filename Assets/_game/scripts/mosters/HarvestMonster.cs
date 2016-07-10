@@ -20,17 +20,17 @@ public class HarvestMonster : MonsterAction
 	{
 		if (!Actor && HarvestStorage <= 0)
 		{
-			_monster.MoveToPosition(_monster.Actor);
+			_monster.MoveToPosition(_monster.Parent);
 			Destroy(this);
 			return;
 		}
 
-		if (!_monster.Actor)
+		if (!_monster.Parent)
 		{
 			return;
 		}
 
-		HarvestActivity activitie = _monster.Actor.Activitie<HarvestActivity>();
+		HarvestActivity activitie = null;
 		if (!activitie)
 		{
 			return;
@@ -45,9 +45,9 @@ public class HarvestMonster : MonsterAction
 				return;
 			}
 
-			if (_monster.Distance(_monster.Actor) > activitie.HarvestRange)
+			if (_monster.Distance(_monster.Parent) > activitie.HarvestRange)
 			{
-				_monster.MoveToPosition(_monster.Actor);
+				_monster.MoveToPosition(_monster.Parent);
 				return;
 			}
 
@@ -99,7 +99,7 @@ public class HarvestMonster : MonsterAction
 		}
 
 		_harvesting = true;
-		HarvestActivity activitie = _monster.Actor.Activitie<HarvestActivity>();
+		HarvestActivity activitie = null;
 		while (HarvestStorage < activitie.HarvestStorage)
 		{
 			yield return new WaitForSeconds(activitie.HarvestTime);
@@ -123,7 +123,7 @@ public class HarvestMonster : MonsterAction
 		}
 		_harvesting = true;
 
-		HarvestActivity activitie = _monster.Actor.Activitie<HarvestActivity>();
+		HarvestActivity activitie = null;//_monster.Parent.Activitie<HarvestActivity>();
 		while (HarvestStorage > 0)
 		{
 			yield return new WaitForSeconds(activitie.HarvestTime);

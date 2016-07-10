@@ -49,8 +49,14 @@ public class TerrainManager : MonoBehaviour
 		RaycastHit hit;
 		if (GetComponent<Collider>().Raycast(ray, out hit, Mathf.Infinity))
 		{
-			//Debug.Log("TERRAIN: hit on terrain");
+			Debug.Log("TERRAIN: hit on terrain");
 			if (OnTerrainClick != null) OnTerrainClick(hit.point);
 		}
+	}
+
+	public static void SimulateClick(Vector3 pos)
+	{
+		if (OnTerrainClick != null) OnTerrainClick(pos);
+
 	}
 }

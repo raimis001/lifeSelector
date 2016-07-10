@@ -25,7 +25,7 @@ public class HarvestActivity : CowActivity
 
 		foreach (Monster monster in Cow.Monsters)
 		{
-			monster.AddAction<HarvestMonster>(stimulus);
+			//monster.AddAction<HarvestMonster>(stimulus);
 		}
 
 	}

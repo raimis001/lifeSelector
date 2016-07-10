@@ -19,7 +19,6 @@ public class Enemy : MoveObject
 
 		return enemy;
 	}
-
 	public static Enemy Create(Transform spawnPoint)
 	{
 		return Create(spawnPoint ? spawnPoint.position : Vector3.zero);

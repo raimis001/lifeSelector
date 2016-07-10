@@ -3,6 +3,8 @@ using UnityEngine.Events;
 
 public class Mover : BaseObject
 {
+
+	[Header("Move params")]
 	[Range(0, 5)]
 	public float MovingSpeed = 1;
 

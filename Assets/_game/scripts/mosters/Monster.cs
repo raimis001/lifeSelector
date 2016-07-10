@@ -2,45 +2,31 @@
 
 public class Monster : MoveObject
 {
+	public GeneticParams Genetic = new GeneticParams();
 
-	private Cow _actor;
-	public Cow Actor
+	private Cow _parent;
+	public Cow Parent
+
 	{
-		get { return _actor; }
+		get { return _parent; }
 		set
 		{
-			if (_actor)
+			if (_parent)
 			{
-				_actor.Monsters.Remove(this);
+				_parent.Monsters.Remove(this);
 			}
-			_actor = value;
-			if (_actor)
+			_parent = value;
+
+			if (_parent)
 			{
-				_actor.Monsters.Add(this);
+				_parent.Monsters.Add(this);
+				Genetic.AddGenetic(_parent.Genetics);
 			}
 			else
 			{
-				MotherActivity[] mothers = FindObjectsOfType<MotherActivity>();
-
-				foreach (MotherActivity mother in mothers)
-				{
-					if (mother.Cow.AllowMonsters())
-					{
-						_actor = mother.Cow;
-						_actor.Monsters.Add(this);
-						MaxHitpoints = _actor.MonsterHitpoints;
-						if (Hitpoints > MaxHitpoints)
-						{
-							Hitpoints = MaxHitpoints;
-						}
-
-						break;
-					}
-				}
-
+				//TODO: find free mothers
+				Genetic.Reset();
 			}
-			RemoveAction();
-
 		}
 	}
 
@@ -68,6 +54,8 @@ public class Monster : MoveObject
 	{
 		base.Start();
 		_line = gameObject.AddComponent<LineDrawer>();
+		_line.FromPoint = transform;
+
 		AtackTag = "monster";
 	}
 
@@ -77,73 +65,38 @@ public class Monster : MoveObject
 		base.Update();
 
 		MonsterAction action = GetComponent<MonsterAction>();
-		if (!action && !Actor)
+		if (!action && !Parent)
 		{
 			_line.Enabled = false;
 			return;
 		}
-
 		_line.Enabled = true;
-		if (action && action.Actor)
-		{
-			_line.FromPoint = transform;
-			_line.ToPoint = action.Actor.transform;
-		}
-		else
-		{
-			_line.FromPoint = transform;
-			_line.ToPoint = Actor.transform;
-		}
+		_line.ToPoint = (action && action.Actor) ? action.Actor.transform : Parent.transform;
 
 	}
 
 	protected override void BeforeDestroy()
 	{
 		//Debug.Log("Monster destroy!");
-		if (Actor)
-		{
-			Actor.Monsters.Remove(this);
-		}
-		_actor = null;
-		RemoveAction();
+		Parent = null;
 	}
 
 	protected override void RandomizeMove()
 	{
 		base.RandomizeMove();
-		if (Actor)
+		if (Parent)
 		{
-			float distance = Distance(Actor);
+			float distance = Distance(Parent);
 			if (distance > 3)
 			{
-				AddForce(Actor.transform, 100*(1 - 1/distance));
+				AddForce(Parent.transform, 100*(1 - 1/distance));
 			}
 		}
 	}
-	public T AddAction<T>(BaseObject enemy) where T : MonsterAction
-	{
-		T a = GetComponent<T>();
-		if (!a)
-		{
-			a = gameObject.AddComponent<T>();
-		}
-
-		a.Actor = enemy;
-		return a;
-	}
-
-	public void RemoveAction()
-	{
-		MonsterAction action = GetComponent<MonsterAction>();
-		if (action)
-		{
-			Destroy(action);
-		}
-	}
-
+	
 	public bool IsFree()
 	{
-		return !Actor || Actor.GetComponent<MotherActivity>();
+		return !Parent || Parent.IsMother();
 	}
 
 }

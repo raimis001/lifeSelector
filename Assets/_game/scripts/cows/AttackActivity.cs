@@ -14,7 +14,7 @@ public class AttackActivity : CowActivity
 		Enemy enemy = Helper.FindClosestEnemy(Cow.Position, Cow.RadarRange);
 		foreach (Monster monster in Cow.Monsters)
 		{
-			monster.AddAction<AttackMonster>(enemy);
+			//monster.AddAction<AttackMonster>(enemy);
 		}
 
 	}

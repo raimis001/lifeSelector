@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameLogic : MonoBehaviour
 {
+	public GameSetup Setup;
 
+	[Header("Spawn points")]
 	public GameObject SpawnPoint;
 	public GameObject EnemyPoint;
-
-	public GameObject Cursor;
-	public Radar Radar;
 
 	[Header("Holders")]
 	public GameObject MonsterHolder;
@@ -27,6 +27,13 @@ public class GameLogic : MonoBehaviour
 	public GameObject DieEffect;
 	public GameObject CollideMonsterEffect;
 	public GameObject SpawnCowEffect;
+
+	[Header("Interface")]
+	public GameObject Cursor;
+	public Radar Radar;
+
+	[HideInInspector]
+	public Stimulus[] StimulusList;
 
 	private bool _spawning;
 
@@ -48,6 +55,11 @@ public class GameLogic : MonoBehaviour
 		}
 	}
 
+	public static GameSetup GameSetup
+	{
+		get { return The.GameLogic.Setup; }
+	}
+
 	#region INIT
 	void Awake()
 	{
@@ -55,7 +67,11 @@ public class GameLogic : MonoBehaviour
 	}
 	void Start()
 	{
-
+		StimulusList = FindObjectsOfType<Stimulus>();
+		for (int i = 0; i < StimulusList.Length; i++)
+		{
+			StimulusList[i].StimulusId = i;
+		}
 	}
 	void OnEnable()
 	{
@@ -95,7 +111,7 @@ public class GameLogic : MonoBehaviour
 		_selectedCow.MoveToPosition(position);
 	}
 
-#region MONSTERS
+	#region MONSTERS
 	public void AddMonster()
 	{
 		Monster.Create(SpawnPoint);

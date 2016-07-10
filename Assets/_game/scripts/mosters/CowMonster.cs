@@ -40,7 +40,7 @@ public class CowMonster : MonsterAction
 		monster._monster.DoDestroy(false);
 
 		_counter++;
-		MotherActivity activitie = _monster.Actor.Activitie<MotherActivity>();
+		MotherActivity activitie = null;//_monster.Parent.Activitie<MotherActivity>();
 
 		if (_counter >= activitie.CowSpawnCount - 1)
 		{

@@ -16,6 +16,7 @@ public class LineDrawer : LineVector
 			_line.enabled = false;
 			return;
 		}
+
 		FromVector = FromPoint.position;
 		ToVector = ToPoint.position;
 		
