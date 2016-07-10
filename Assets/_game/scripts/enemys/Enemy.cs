@@ -50,6 +50,7 @@ public class Enemy : MoveObject
 			GameObject obj = Helper.FindClosestObject(transform.position, new []{TagKind.Monster.ToString(), TagKind.Cow.ToString() } );
 			if (obj)
 			{
+				//Debug.Log("Find closest:" + obj.name);
 				_enemyObject = obj.GetComponent<MoveObject>();
 			}
 		}
@@ -62,7 +63,7 @@ public class Enemy : MoveObject
 			}
 			else
 			{
-				_bulletManager.Shot(this, _enemyObject, "monster", Attack);
+				_bulletManager.Shot(this, _enemyObject, TagKind.Enemy, Attack);
 				Stop();
 			}
 

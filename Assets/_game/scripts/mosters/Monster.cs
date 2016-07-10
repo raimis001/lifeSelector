@@ -20,7 +20,7 @@ public class Monster : MoveObject
 			if (_parent)
 			{
 				_parent.Monsters.Add(this);
-				Genetic.AddGenetic(_parent.Genetics);
+				ApplayGenetic();
 			}
 			else
 			{
@@ -50,6 +50,12 @@ public class Monster : MoveObject
 		name = "monster";
 	}
 
+	public void ApplayGenetic()
+	{
+		if (!Parent) return;
+		Genetic.AddGeneticValue(Parent.CurrentParams);
+	}
+
 	protected override void Start()
 	{
 		base.Start();
@@ -63,15 +69,58 @@ public class Monster : MoveObject
 	{
 
 		base.Update();
+		DetectAttack();
 
-		MonsterAction action = GetComponent<MonsterAction>();
-		if (!action && !Parent)
+		_line.Enabled = Parent || AttackObject;
+		if (_line.Enabled)
 		{
-			_line.Enabled = false;
+			_line.ToPoint = AttackObject ? AttackObject.transform : Parent.transform;
+		}
+
+	}
+
+	private BaseObject AttackObject;
+	private BulletManager _bulletManager;
+
+	void DetectAttack()
+	{
+		if (Genetic.AttackDamage <= 0) return;
+		if (!Parent) return;
+
+		if (!AttackObject)
+		{
+			AttackObject = Helper.FindClosestEnemy(Parent.Position, Parent.CurrentParams.DetectRange);
+		}
+
+		if (!AttackObject) return;
+
+		if (Parent.Distance(AttackObject) > Parent.CurrentParams.DetectRange)
+		{
+			AttackObject = null;
 			return;
 		}
-		_line.Enabled = true;
-		_line.ToPoint = (action && action.Actor) ? action.Actor.transform : Parent.transform;
+
+		if (Distance(AttackObject) > Genetic.AttackRange)
+		{
+			MoveToPosition(AttackObject.Position);
+			return;
+		}
+
+		if (!_bulletManager)
+		{
+			_bulletManager = gameObject.AddComponent<BulletManager>();
+		}
+		if (!_bulletManager) return;
+
+		_bulletManager.Shot(this, AttackObject, TagKind.Monster, 
+			new AttackParams()
+			{
+				AttackDamage = Genetic.AttackDamage,
+				AttackSpeed = Genetic.AttackSpeed,
+				AttackRange = Genetic.AttackRange
+			});
+		Stop();
+
 
 	}
 

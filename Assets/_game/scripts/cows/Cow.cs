@@ -19,7 +19,9 @@ public class Cow : MoveObject
 	[Header("Genetic")]
 	public List<GeneticProps> Genetics = new List<GeneticProps>();
 	public GeneticParams Params = new GeneticParams();
-	private GeneticParams _currentParams = new GeneticParams();
+	
+	[HideInInspector]
+	public GeneticParams CurrentParams = new GeneticParams();
 
 	private readonly List<int> _usedStimulus = new List<int>();
 
@@ -101,7 +103,7 @@ public class Cow : MoveObject
 	{
 		base.Update();
 		
-		if (MonsterCount < MaxMonsterCount && _currentParams.SpawnMonsters > 0)
+		if (MonsterCount < MaxMonsterCount && CurrentParams.SpawnMonsters > 0)
 		{
 			spawnTime -= Time.deltaTime;
 			if (spawnTime <= 0)
@@ -109,7 +111,7 @@ public class Cow : MoveObject
 				//TODO: spawn monsters
 				Monster monster = Monster.Create(transform.position + new Vector3().Random(true) * RadarRange + Vector3.down * 0.5f);
 				monster.Parent = this;
-				spawnTime = _currentParams.SpawnTime;
+				spawnTime = CurrentParams.SpawnTime;
 			}
 		}
 
@@ -117,7 +119,7 @@ public class Cow : MoveObject
 
 	public bool IsMother()
 	{
-		return _currentParams.SpawnMonsters > 0;
+		return CurrentParams.SpawnMonsters > 0;
 	}
 
 	#region Stimulus triggers
@@ -174,18 +176,18 @@ public class Cow : MoveObject
 
 	void RecalculateGenetic()
 	{
-		_currentParams.Reset();
+		CurrentParams.Reset();
 		foreach (GeneticKind kind in Helper.GetGeneticKinds())
 		{
-			_currentParams.SetGeneticValue(kind, GameLogic.GameSetup.DefaultCow.GeneticValue(kind) + Params.GeneticValue(kind));
+			CurrentParams.SetGeneticValue(kind, GameLogic.GameSetup.DefaultCow.GeneticValue(kind) + Params.GeneticValue(kind));
 		}
 
-		MovingSpeed = _currentParams.MoveSpeed;
-		RadarRange = _currentParams.DetectRange;
-		spawnTime = _currentParams.SpawnTime;
-		MaxMonsterCount = (int)_currentParams.MonsterCount;
+		MovingSpeed = CurrentParams.MoveSpeed;
+		RadarRange = CurrentParams.DetectRange;
+		spawnTime = CurrentParams.SpawnTime;
+		MaxMonsterCount = (int)CurrentParams.MonsterCount;
 
-		MaxHitpoints = _currentParams.Hitpoints;
+		MaxHitpoints = CurrentParams.Hitpoints;
 		if (Hitpoints > MaxHitpoints)
 		{
 			Hitpoints = MaxHitpoints;
@@ -196,8 +198,8 @@ public class Cow : MoveObject
 
 		foreach (Monster monster in Monsters)
 		{
-			monster.Genetic.AddGeneticValue(_currentParams);
-		}
+			monster.Genetic.AddGeneticValue(CurrentParams);
+		} 
 
 	}
 

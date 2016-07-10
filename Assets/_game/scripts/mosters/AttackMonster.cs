@@ -28,7 +28,7 @@ public class AttackMonster : MonsterAction
 		}
 		else
 		{
-			_bulletManager.Shot(_monster, Actor, "enemy", attack);
+			_bulletManager.Shot(_monster, Actor, TagKind.Enemy, attack);
 			_monster.Stop();
 		}
 	}

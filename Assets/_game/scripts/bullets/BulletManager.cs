@@ -9,7 +9,7 @@ public class BulletManager : MonoBehaviour
 	private bool _shoting;
 	private float _shotTime;
 
-	public void Shot(MoveObject parent, BaseObject target, string tag, AttackParams attack)
+	public void Shot(MoveObject parent, BaseObject target, TagKind tagKind, AttackParams attack)
 	{
 		if (_shoting) return;
 
@@ -18,7 +18,7 @@ public class BulletManager : MonoBehaviour
 		_shotTime = ShotTime;
 		_shoting = true;
 
-		Bullet.Create(parent, target, tag, attack);
+		Bullet.Create(parent, target, tagKind, attack);
 
 		StartCoroutine(DoShot());
 	}

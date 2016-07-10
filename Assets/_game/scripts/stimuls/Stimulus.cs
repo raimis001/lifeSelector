@@ -51,7 +51,6 @@ public class Stimulus : BaseObject
 
 	public void OnMouseUp()
 	{
-		Debug.Log("Mouse is down");
 		TerrainManager.SimulateClick(transform.position);
 	}
 }

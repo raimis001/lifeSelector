@@ -11,24 +11,39 @@ public class Bullet : MonoBehaviour
 	private float _time = 2;
 	public float _damage;
 
-	public static void Create(BaseObject moveObject, BaseObject targetObject, string tag, AttackParams attack)
+	public static void Create(BaseObject moveObject, BaseObject targetObject, TagKind tag, AttackParams attack)
 	{
 		GameObject obj = Instantiate(The.GameLogic.BulletPrefab);
 		obj.transform.position = moveObject.Position + (targetObject.Position - moveObject.Position).normalized * 0.7f + new Vector3(0,0.5f,0);
 
 		Bullet bullet = obj.GetComponent<Bullet>();
 		bullet.Target = targetObject.Position;
-		bullet._tag = tag;
-		bullet.tag = tag.Equals(TagKind.Enemy.ToString()) ? TagKind.Monster.ToString() : TagKind.Enemy.ToString();
+		bullet._tag = tag == TagKind.Enemy ? "monster" : "enemy";
+		bullet.tag = "Bullet";
 		bullet._damage = attack.AttackDamage;
 
-		GameObject[] alies = GameObject.FindGameObjectsWithTag(bullet.tag);
+		IgnoreTag(bullet.tag, bullet);
+
+		IgnoreTag(tag.ToString(), bullet);
+		if (tag == TagKind.Monster)
+		{
+			IgnoreTag("Cow", bullet);
+		}
+
+	}
+
+	static void IgnoreTag(string tagIgnore, Bullet bullet)
+	{
+		GameObject[] alies = GameObject.FindGameObjectsWithTag(tagIgnore);
 
 		foreach (GameObject aly in alies)
 		{
-			Physics.IgnoreCollision(bullet.GetComponent<Collider>(),aly.GetComponent<Collider>());
+			Collider[] c = aly.GetComponentsInChildren<Collider>();
+			foreach (Collider collider1 in c)
+			{
+				Physics.IgnoreCollision(bullet.GetComponent<Collider>(), collider1);
+			}
 		}
-
 	}
 
 	// Use this for initialization
