@@ -8,7 +8,7 @@ public class Bullet : MonoBehaviour
 	private Rigidbody _rigidbody;
 
 	private string _tag;
-	private float _time = 2;
+	private float _time = 10;
 	public float _damage;
 
 	public static void Create(BaseObject moveObject, BaseObject targetObject, TagKind tag, AttackParams attack)
